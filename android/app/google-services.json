@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1075720037167",
+    "firebase_url": "https://snowy-fire.firebaseio.com",
+    "project_id": "snowy-fire",
+    "storage_bucket": "snowy-fire.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1075720037167:android:28d6f52bf93e17f691b7da",
+        "android_client_info": {
+          "package_name": "com.example.authsnow"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1075720037167-58vnv6sep034mgfnecsh42752luia9ga.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBmE3ZOi-ruNVvFjCWge--QQHZ5h4g7gw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1075720037167-58vnv6sep034mgfnecsh42752luia9ga.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
