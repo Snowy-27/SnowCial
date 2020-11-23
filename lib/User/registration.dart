@@ -1,8 +1,6 @@
-import 'package:authsnow/User/login.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class Registration extends StatefulWidget {
   Registration({Key key}) : super(key: key);
@@ -35,7 +33,13 @@ class _Registration extends State<Registration> {
       error = true;
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
+        setState(() {
+          status = 'Le mot de passe est trop court';
+        });
       } else if (e.code == 'email-already-in-use') {
+        setState(() {
+          status = "Un compte avec cet email existe deja";
+        });
         print('The account already exists for that email.');
       }
     } catch (e) {
@@ -115,6 +119,7 @@ class _Registration extends State<Registration> {
                     color: Colors.white,
                   ),
                   controller: emailHolder,
+                  enableSuggestions: false,
                   decoration: const InputDecoration(
                     icon: Icon(
                       Icons.email,
@@ -130,6 +135,9 @@ class _Registration extends State<Registration> {
                     color: Colors.white,
                   ),
                   controller: passHolder,
+                  enableSuggestions: false,
+                  autocorrect: false,
+                  obscureText: true,
                   decoration: const InputDecoration(
                     icon: Icon(
                       Icons.lock,
@@ -153,7 +161,7 @@ class _Registration extends State<Registration> {
                 color: Colors.white,
               )),
           SizedBox(
-            height: 40,
+            height: 20,
           ),
           FlatButton(
             child: Text(

@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class Chat extends StatefulWidget {
   Chat({Key key, this.name, this.email, this.pseudo, this.receiver})
@@ -19,12 +19,12 @@ class _ChatState extends State<Chat> {
 
   var st = '';
   var ist = false;
-  final firestoreInstance = Firestore.instance;
+  final firestoreInstance = FirebaseFirestore.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   getMessage() {
     StreamBuilder(
-      stream: Firestore.instance
+      stream: FirebaseFirestore.instance
           .collection("messages")
           .where('corresponding',
               isEqualTo: widget.pseudo + '+' + widget.receiver)
@@ -157,7 +157,7 @@ class _ChatState extends State<Chat> {
 
   streamquery() {
     List<Stream<QuerySnapshot>> streams = [];
-    final someCollection = Firestore.instance.collection("messages");
+    final someCollection = FirebaseFirestore.instance.collection("messages");
     var firstQuery = someCollection
         .where('receiver', isEqualTo: widget.receiver)
         .snapshots();
@@ -212,7 +212,7 @@ class _ChatState extends State<Chat> {
                       topRight: Radius.circular(30.0),
                     ),
                     child: StreamBuilder(
-                      stream: Firestore.instance
+                      stream: FirebaseFirestore.instance
                           .collection("messages")
                           .where('corresponding', whereIn: [
                             widget.pseudo + '+' + widget.receiver,

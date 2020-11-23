@@ -1,14 +1,12 @@
+import 'package:authsnow/User/login.dart';
+import 'package:authsnow/screens/Listchat.dart';
+import 'package:authsnow/screens/post.dart';
+import 'package:authsnow/screens/profile.dart';
+import 'package:authsnow/screens/publication.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:snow/screens/Chat.dart';
-import 'package:snow/screens/Listchat.dart';
-import 'package:snow/screens/profile.dart';
-import 'package:snow/screens/welcome.dart';
-import 'publication.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:snow/screens/publication.dart';
-import 'package:snow/screens/post.dart';
-import 'package:snow/users/connexion.dart';
+
+import 'publication.dart';
 
 class Home extends StatefulWidget {
   Home({Key key, this.name, this.email, this.pseudo}) : super(key: key);
@@ -22,22 +20,16 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   var prefs;
-  final firestoreInstance = Firestore.instance;
-
+  final firestoreInstance = FirebaseFirestore.instance;
   @override
   void initState() {
     super.initState();
-    getShared();
-  }
-
-  getShared() async {
-    prefs = await SharedPreferences.getInstance();
   }
 
   delete() async {
     prefs.remove('email');
     prefs.remove('name');
-    Route route = MaterialPageRoute(builder: (context) => FormConnexion());
+    Route route = MaterialPageRoute(builder: (context) => Login());
     Navigator.pushReplacement(context, route);
   }
 
@@ -98,7 +90,6 @@ class _HomeState extends State<Home> {
                   child: Profile(
                     email: widget.email,
                     name: widget.name,
-                    deco: delete,
                     pseudo: widget.pseudo,
                   ),
                 ),

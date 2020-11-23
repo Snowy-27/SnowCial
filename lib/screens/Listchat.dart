@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:snow/screens/Chat.dart';
+
+import 'Chat.dart';
 
 class Listcontact extends StatefulWidget {
   Listcontact({Key key, this.name, this.email, this.pseudo}) : super(key: key);
@@ -12,7 +13,7 @@ class Listcontact extends StatefulWidget {
 }
 
 class _ListcontactState extends State<Listcontact> {
-  final firestoreInstance = Firestore.instance;
+  final firestoreInstance = FirebaseFirestore.instance;
 
   _buildcontact(var pseudo, var lastmessage) {
     final Container msg = Container(
@@ -80,7 +81,7 @@ class _ListcontactState extends State<Listcontact> {
       child: Container(
         child: ClipRRect(
             child: StreamBuilder(
-          stream: Firestore.instance.collection("contact").snapshots(),
+          stream: FirebaseFirestore.instance.collection("contact").snapshots(),
           builder: (context, snapshot) {
             return !snapshot.hasData
                 ? Text('PLease Wait')

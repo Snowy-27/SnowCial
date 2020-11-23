@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class Publication extends StatefulWidget {
@@ -22,7 +22,7 @@ class _Publication extends State<Publication> {
   var count = 0;
   bool oneTime = false;
   final picker = ImagePicker();
-  final firestoreInstance = Firestore.instance;
+  final firestoreInstance = FirebaseFirestore.instance;
   @override
   void initState() {
     super.initState();
@@ -41,16 +41,16 @@ class _Publication extends State<Publication> {
       firestoreInstance
           .collection('images')
           .where('pseudo', isEqualTo: widget.name)
-          .getDocuments()
+          .get()
           .then((QuerySnapshot value) {
-        if (value.documents.isEmpty) {
+        if (value.docs.isEmpty) {
           setState(() {
             setState(() {
               status = 'Aucun image';
             });
           });
         } else {
-          for (var doc in value.documents) {
+          for (var doc in value.docs) {
             setState(() {
               a.add(doc['url'].toString());
             });

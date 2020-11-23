@@ -24,10 +24,6 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Container(
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('Home'),
-          backgroundColor: Colors.blueGrey[600],
-        ),
         backgroundColor: Colors.black,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,

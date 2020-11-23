@@ -17,7 +17,7 @@ class _TestState extends State<Test> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String messageState = '';
   String receiverState = '';
-  final firestoreInstance = Firestore.instance;
+  final firestoreInstance = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {

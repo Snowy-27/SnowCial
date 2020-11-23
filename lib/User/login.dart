@@ -1,10 +1,8 @@
 import 'package:authsnow/User/registration.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:authsnow/screens/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:authsnow/screens/profile.dart';
-import 'package:flutter/services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget {
   Login({Key key}) : super(key: key);
@@ -44,16 +42,25 @@ class _Login extends State<Login> {
     if (error == false) {
       user = userCredential.user;
       print(user.uid);
-      setState(() {
-        status = user.email;
-      });
-      Route route = MaterialPageRoute(
-          builder: (context) => Profile(
-                email: user.email,
-                name: 'dan',
-                pseudo: 'snowy',
-              ));
-      Navigator.pushReplacement(context, route);
+      if (user.emailVerified) {
+        setState(() {
+          status = user.email;
+        });
+        Route route = MaterialPageRoute(
+            builder: (context) => Home(
+                  email: user.email,
+                  name: 'dan',
+                  pseudo: 'snowy',
+                ));
+        Navigator.pushReplacement(context, route);
+      } else {
+        await user.sendEmailVerification();
+
+        setState(() {
+          status =
+              'Un email de confirmation vient d\'etre envoyé, \n veuillez le confirmer \n  ';
+        });
+      }
     }
     error = false;
   }
@@ -81,6 +88,7 @@ class _Login extends State<Login> {
                     color: Colors.white,
                   ),
                   controller: emailHolder,
+                  enableSuggestions: false,
                   decoration: const InputDecoration(
                     icon: Icon(
                       Icons.email,
@@ -96,6 +104,9 @@ class _Login extends State<Login> {
                     color: Colors.white,
                   ),
                   controller: passHolder,
+                  enableSuggestions: false,
+                  autocorrect: false,
+                  obscureText: true,
                   decoration: const InputDecoration(
                     icon: Icon(
                       Icons.lock,
@@ -119,13 +130,6 @@ class _Login extends State<Login> {
           ),
           SizedBox(
             height: 40,
-          ),
-          FlatButton(
-            child: Text(
-              'logout',
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: logout,
           ),
           FlatButton(
             child: Text(

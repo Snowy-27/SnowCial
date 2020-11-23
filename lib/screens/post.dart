@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:image_picker/image_picker.dart'; // For Image Picker
-import 'package:firebase_storage/firebase_storage.dart'; // For File Upload To Firestore
-import 'package:path/path.dart' as Path;
 import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart'; // For Image Picker
+import 'package:path/path.dart' as Path;
 
 class Post extends StatefulWidget {
   Post({Key key, this.name, this.email, this.pseudo}) : super(key: key);
@@ -22,7 +23,7 @@ class _PostState extends State<Post> {
   var prefs;
   var url;
   final picker = ImagePicker();
-  final firestoreInstance = Firestore.instance;
+  final firestoreInstance = FirebaseFirestore.instance;
   Future chooseFile() async {
     // ignore: deprecated_member_use
 
@@ -39,18 +40,16 @@ class _PostState extends State<Post> {
 
   Future uploadImageToFirebase(BuildContext context) async {
     String fileName = Path.basename(_image.path);
-    StorageReference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child('image/$fileName');
-    StorageUploadTask uploadTask = firebaseStorageRef.putFile(_image);
-    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-    taskSnapshot.ref.getDownloadURL().then(
-      (value) {
-        setState(() {
-          url = value.toString();
-          addUrlToFirestore(url, widget.name);
-        });
-      },
-    );
+    await firebase_storage.FirebaseStorage.instance
+        .ref('uploads/$fileName')
+        .putFile(_image);
+    String downloadURL = await firebase_storage.FirebaseStorage.instance
+        .ref('image/$fileName')
+        .getDownloadURL();
+    setState(() {
+      url = downloadURL.toString();
+      addUrlToFirestore(url, widget.name);
+    });
 
     setState(() {});
   }
