@@ -14,65 +14,81 @@ class Publication extends StatefulWidget {
 
 class _Publication extends State<Publication> {
   var email;
+  var currentUrl = [];
   var name;
+  var likeNumber = 0;
   List a = [];
   var status;
   var prefs;
   var url;
+  Stream dataList;
   var count = 0;
   bool oneTime = false;
   final picker = ImagePicker();
   final firestoreInstance = FirebaseFirestore.instance;
+  Stream test;
   @override
   void initState() {
-    super.initState();
+    super.initState();  
   }
 
-  addUrlToFirestore(url, pseudo) async {
-    await firestoreInstance
+  like() {
+    dataList = firestoreInstance
         .collection('images')
-        .add({"url": url, 'pseudo': pseudo});
-  }
+        .where('url', isEqualTo: currentUrl)
+        .snapshots();
 
-  createImage(var index) {}
+    return dataList;
+  }
 
   getimage(bool widge, var index, bool getimg) {
     if (getimg) {
       firestoreInstance
           .collection('images')
           .where('pseudo', isEqualTo: widget.name)
+          .orderBy('timestamp', descending: true)
           .get()
           .then((QuerySnapshot value) {
         if (value.docs.isEmpty) {
           setState(() {
+            ;
+
             setState(() {
               status = 'Aucun image';
             });
+          });
+        } else if (index > value.docs.length) {
+          setState(() {
+            status = 'aucune image';
           });
         } else {
           for (var doc in value.docs) {
             setState(() {
               a.add(doc['url'].toString());
-            });
-            setState(() {
-              count = a.length;
+              count = doc.data().length;
             });
           }
         }
       });
     }
     if (widge) {
+      like();
       return Column(
         children: [
           Image.network(a[index].toString()),
-          RaisedButton(
-            child: Text('Download'),
-            onPressed: () {},
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Like: ' + '4',
+                style: TextStyle(color: Colors.white),
+              )
+            ],
           ),
           Divider(
             color: Colors.white,
             height: 50,
-          )
+          ),
         ],
       );
     } else {

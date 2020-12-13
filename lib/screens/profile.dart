@@ -1,6 +1,7 @@
 import 'package:authsnow/User/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
   Profile({Key key, this.name, this.email, this.pseudo}) : super(key: key);
@@ -13,9 +14,21 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  var prefs;
+
+  @override
+  void initState() {
+    super.initState();
+    loadShared();
+  }
+
+  void loadShared() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
   void logout() async {
     await FirebaseAuth.instance.signOut();
-
+    prefs.remove('uid');
     Route route = MaterialPageRoute(builder: (context) => Login());
     Navigator.pushReplacement(context, route);
   }

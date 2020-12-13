@@ -9,10 +9,8 @@ import 'package:flutter/material.dart';
 import 'publication.dart';
 
 class Home extends StatefulWidget {
-  Home({Key key, this.name, this.email, this.pseudo}) : super(key: key);
-  final String name;
-  final String email;
-  final String pseudo;
+  Home({Key key, this.id}) : super(key: key);
+  final String id;
 
   @override
   _HomeState createState() => _HomeState();
@@ -20,10 +18,30 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   var prefs;
+  var email;
+  var name;
+  var pseudo;
   final firestoreInstance = FirebaseFirestore.instance;
   @override
   void initState() {
     super.initState();
+    setValues();
+  }
+
+  void setValues() async {
+    await firestoreInstance
+        .collection('user')
+        .where('idUser', isEqualTo: widget.id)
+        .get()
+        .then((QuerySnapshot value) {
+      if (value.docs.isNotEmpty) {
+        setState(() {
+          email = value.docs[0]['email'];
+          name = value.docs[0]['name'];
+          pseudo = value.docs[0]['pseudo'];
+        });
+      }
+    });
   }
 
   delete() async {
@@ -67,30 +85,30 @@ class _HomeState extends State<Home> {
               children: [
                 new Container(
                   child: Publication(
-                    name: widget.name,
-                    email: widget.email,
-                    pseudo: widget.pseudo,
+                    name: name,
+                    email: email,
+                    pseudo: pseudo,
                   ),
                 ),
                 new Container(
                   child: Listcontact(
-                    email: widget.email,
-                    name: widget.name,
-                    pseudo: widget.pseudo,
+                    email: email,
+                    name: name,
+                    pseudo: pseudo,
                   ),
                 ),
                 new Container(
                   child: Post(
-                    email: widget.email,
-                    name: widget.name,
-                    pseudo: widget.pseudo,
+                    email: email,
+                    name: name,
+                    pseudo: pseudo,
                   ),
                 ),
                 new Container(
                   child: Profile(
-                    email: widget.email,
-                    name: widget.name,
-                    pseudo: widget.pseudo,
+                    email: email == null ? '' : email,
+                    name: name == null ? '' : name,
+                    pseudo: pseudo == null ? '' : pseudo,
                   ),
                 ),
               ],

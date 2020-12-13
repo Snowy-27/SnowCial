@@ -32,7 +32,6 @@ class _Registration extends State<Registration> {
     } on FirebaseAuthException catch (e) {
       error = true;
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
         setState(() {
           status = 'Le mot de passe est trop court';
         });
@@ -40,7 +39,6 @@ class _Registration extends State<Registration> {
         setState(() {
           status = "Un compte avec cet email existe deja";
         });
-        print('The account already exists for that email.');
       }
     } catch (e) {
       print(e);
@@ -50,6 +48,9 @@ class _Registration extends State<Registration> {
         'idUser': id.toString(),
         'email': emailHolder.text,
         'name': nameHolder.text,
+        'pseudo': pseudoHolder.text,
+      });
+      await firestore.collection("contact").add({
         'pseudo': pseudoHolder.text,
       });
       User user = FirebaseAuth.instance.currentUser;

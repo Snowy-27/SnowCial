@@ -3,6 +3,7 @@ import 'package:authsnow/screens/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   Login({Key key}) : super(key: key);
@@ -16,11 +17,17 @@ class _Login extends State<Login> {
   final emailHolder = TextEditingController();
   final passHolder = TextEditingController();
   var status = '';
-
+  bool saveData = false;
+  var prefs;
   UserCredential userCredential;
   @override
   void initState() {
     super.initState();
+    loadShared();
+  }
+
+  void loadShared() async {
+    prefs = await SharedPreferences.getInstance();
   }
 
   void login() async {
@@ -46,19 +53,19 @@ class _Login extends State<Login> {
         setState(() {
           status = user.email;
         });
+        if (saveData) {
+          prefs.setString('uid', user.uid);
+        }
         Route route = MaterialPageRoute(
             builder: (context) => Home(
-                  email: user.email,
-                  name: 'dan',
-                  pseudo: 'snowy',
+                  id: user.uid,
                 ));
         Navigator.pushReplacement(context, route);
       } else {
         await user.sendEmailVerification();
-
         setState(() {
           status =
-              'Un email de confirmation vient d\'etre envoyé, \n veuillez le confirmer \n  ';
+              'Un email de confirmation vient d\'etre envoyé, \n veuillez le confirmer \n puis vous reconnecter ';
         });
       }
     }
@@ -117,6 +124,21 @@ class _Login extends State<Login> {
                   ),
                   onChanged: (val) {},
                 ),
+                CheckboxListTile(
+                  activeColor: Colors.red,
+                  checkColor: Colors.yellow,
+                  secondary: Icon(Icons.save, color: Colors.white),
+                  title: Text(
+                    "Se souvenir de moi",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  value: saveData,
+                  onChanged: (newValue) {
+                    setState(() {
+                      saveData = !saveData;
+                    });
+                  },
+                )
               ])),
           FlatButton(
               child: Text(

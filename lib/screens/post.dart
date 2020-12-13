@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart'; // For Image Picker
 import 'package:path/path.dart' as Path;
 
@@ -39,25 +40,34 @@ class _PostState extends State<Post> {
   }
 
   Future uploadImageToFirebase(BuildContext context) async {
-    String fileName = Path.basename(_image.path);
-    await firebase_storage.FirebaseStorage.instance
-        .ref('uploads/$fileName')
-        .putFile(_image);
-    String downloadURL = await firebase_storage.FirebaseStorage.instance
-        .ref('image/$fileName')
-        .getDownloadURL();
-    setState(() {
-      url = downloadURL.toString();
-      addUrlToFirestore(url, widget.name);
-    });
+    try {
+      String fileName = Path.basename(_image.path);
+      await firebase_storage.FirebaseStorage.instance
+          .ref('images/$fileName')
+          .putFile(_image);
+      String downloadURL = await firebase_storage.FirebaseStorage.instance
+          .ref('images/$fileName')
+          .getDownloadURL();
+      setState(() {
+        url = downloadURL.toString();
+        addUrlToFirestore(url, widget.pseudo);
+      });
+    } on PlatformException {
+      print('catcch');
+    } catch (e) {
+      print(e);
+    }
 
     setState(() {});
   }
 
   addUrlToFirestore(url, pseudo) async {
-    await firestoreInstance
-        .collection('images')
-        .add({"url": url, 'pseudo': pseudo});
+    await firestoreInstance.collection('images').add({
+      "url": url,
+      'pseudo': pseudo,
+      'timestamp': DateTime.now(),
+      'like': 0.toInt(),
+    });
   }
 
   @override
