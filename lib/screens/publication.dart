@@ -15,7 +15,6 @@ class Publication extends StatefulWidget {
 class _Publication extends State<Publication> {
   var email;
   var currentUrl = [];
-  var name;
   var likeNumber = 0;
   List a = [];
   var status;
@@ -27,10 +26,6 @@ class _Publication extends State<Publication> {
   final picker = ImagePicker();
   final firestoreInstance = FirebaseFirestore.instance;
   Stream test;
-  @override
-  void initState() {
-    super.initState();  
-  }
 
   like() {
     dataList = firestoreInstance
@@ -41,56 +36,55 @@ class _Publication extends State<Publication> {
     return dataList;
   }
 
-  getimage(bool widge, var index, bool getimg) {
-    if (getimg) {
-      firestoreInstance
-          .collection('images')
-          .where('pseudo', isEqualTo: widget.name)
-          .orderBy('timestamp', descending: true)
-          .get()
-          .then((QuerySnapshot value) {
-        if (value.docs.isEmpty) {
+  getimage(bool widge, var index) {
+    firestoreInstance
+        .collection('images')
+        .where('pseudo', isEqualTo: widget.name)
+        .orderBy('timestamp', descending: true)
+        .get()
+        .then((QuerySnapshot value) {
+      if (value.docs.isEmpty) {
+        setState(() {
+          status = 'Aucun image';
+        });
+        print('aucune ');
+      } else if (index > value.docs.length) {
+        setState(() {
+          status = 'aucune image';
+        });
+      } else {
+        for (var doc in value.docs) {
           setState(() {
-            ;
-
-            setState(() {
-              status = 'Aucun image';
-            });
+            a.add(doc['url'].toString());
+            count = doc.data().length;
           });
-        } else if (index > value.docs.length) {
-          setState(() {
-            status = 'aucune image';
-          });
-        } else {
-          for (var doc in value.docs) {
-            setState(() {
-              a.add(doc['url'].toString());
-              count = doc.data().length;
-            });
-          }
         }
-      });
-    }
+      }
+    });
     if (widge) {
       like();
-      return Column(
-        children: [
-          Image.network(a[index].toString()),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Like: ' + '4',
-                style: TextStyle(color: Colors.white),
-              )
-            ],
-          ),
-          Divider(
-            color: Colors.white,
-            height: 50,
-          ),
-        ],
-      );
+      try {
+        return Column(
+          children: [
+            Image.network(a[index].toString()),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Like: ' + '4',
+                  style: TextStyle(color: Colors.white),
+                )
+              ],
+            ),
+            Divider(
+              color: Colors.white,
+              height: 50,
+            ),
+          ],
+        );
+      } catch (RangeError) {
+        print('sqdd');
+      }
     } else {
       return 0;
     }
@@ -102,7 +96,7 @@ class _Publication extends State<Publication> {
         color: Colors.black,
         child: ListView.builder(
           itemBuilder: (BuildContext ctx, int index) {
-            return getimage(true, index, oneTime == true ? false : true);
+            return getimage(true, index);
           },
         ));
   }

@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1075720037167:android:28d6f52bf93e17f691b7da",
+        "mobilesdk_app_id": "1:1075720037167:android:93c04dafc68dae5c91b7da",
         "android_client_info": {
-          "package_name": "com.example.authsnow"
+          "package_name": "fr.danhabib.snowy"
         }
       },
       "oauth_client": [

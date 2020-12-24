@@ -7,8 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    systemNavigationBarColor: Colors.blueGrey[900],
-    statusBarColor: Colors.blueGrey[600],
+    systemNavigationBarColor: Colors.black,
+    statusBarColor: Colors.black,
   ));
 
   WidgetsFlutterBinding.ensureInitialized();
