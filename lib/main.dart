@@ -8,13 +8,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.black,
-    statusBarColor: Colors.black,
   ));
-
-  WidgetsFlutterBinding.ensureInitialized();
-  SharedPreferences prefs = await SharedPreferences.getInstance();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
   var uid = prefs.getString('uid');
   runApp(MyApp(
     home: uid == null

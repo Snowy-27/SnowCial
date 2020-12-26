@@ -56,12 +56,16 @@ class _ListcontactState extends State<Listcontact> {
                   ],
                 ),
                 onPressed: () {
+                  print(widget.name);
+                  print(widget.email);
+                  print(widget.pseudo);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => Chat(
                               email: widget.email,
                               name: widget.name,
+                              receiver: pseudo,
                               pseudo: widget.pseudo,
                             )),
                   );
@@ -94,7 +98,7 @@ class _ListcontactState extends State<Listcontact> {
                       return isNotMe
                           ? _buildcontact(
                               message['pseudo'],
-                              message['message'],
+                              'dd',
                             )
                           : Container(
                               width: 0,

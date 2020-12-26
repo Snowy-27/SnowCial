@@ -27,77 +27,32 @@ class _Publication extends State<Publication> {
   final firestoreInstance = FirebaseFirestore.instance;
   Stream test;
 
-  like() {
-    dataList = firestoreInstance
-        .collection('images')
-        .where('url', isEqualTo: currentUrl)
-        .snapshots();
-
-    return dataList;
-  }
-
-  getimage(bool widge, var index) {
-    firestoreInstance
-        .collection('images')
-        .where('pseudo', isEqualTo: widget.name)
-        .orderBy('timestamp', descending: true)
-        .get()
-        .then((QuerySnapshot value) {
-      if (value.docs.isEmpty) {
-        setState(() {
-          status = 'Aucun image';
-        });
-        print('aucune ');
-      } else if (index > value.docs.length) {
-        setState(() {
-          status = 'aucune image';
-        });
-      } else {
-        for (var doc in value.docs) {
-          setState(() {
-            a.add(doc['url'].toString());
-            count = doc.data().length;
-          });
-        }
-      }
-    });
-    if (widge) {
-      like();
-      try {
-        return Column(
-          children: [
-            Image.network(a[index].toString()),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Like: ' + '4',
-                  style: TextStyle(color: Colors.white),
-                )
-              ],
-            ),
-            Divider(
-              color: Colors.white,
-              height: 50,
-            ),
-          ],
-        );
-      } catch (RangeError) {
-        print('sqdd');
-      }
-    } else {
-      return 0;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.black,
-        child: ListView.builder(
-          itemBuilder: (BuildContext ctx, int index) {
-            return getimage(true, index);
-          },
-        ));
+      color: Colors.black,
+      child: StreamBuilder(
+        stream: firestoreInstance
+            .collection("images")
+            .where('pseudo', isEqualTo: widget.pseudo)
+            .orderBy('timestamp', descending: true)
+            .snapshots(),
+        // ignore: missing_return
+        builder: (context, snapshot) {
+          return !snapshot.hasData
+              ? Container(
+                  width: 0,
+                  height: 0,
+                )
+              : ListView.builder(
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot url = snapshot.data.documents[index];
+                    return Image.network(url['url']);
+                  },
+                );
+        },
+      ),
+    );
   }
 }

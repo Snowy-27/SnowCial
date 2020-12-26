@@ -24,6 +24,18 @@ class _Registration extends State<Registration> {
   void addUser() async {
     var error = false;
     var id;
+    firestore
+        .collection('user')
+        .where('pseudo', isEqualTo: pseudoHolder.text)
+        .get()
+        .then((QuerySnapshot value) {
+      if (pseudoHolder.text == value.docs[0]['pseudo']) {
+        error = true;
+        setState(() {
+          status = 'Ce pseudo est deja utilisé';
+        });
+      }
+    });
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
@@ -65,10 +77,6 @@ class _Registration extends State<Registration> {
       nameHolder.clear();
     }
     error = false;
-  }
-
-  void logout() async {
-    await FirebaseAuth.instance.signOut();
   }
 
   @override
@@ -163,13 +171,6 @@ class _Registration extends State<Registration> {
               )),
           SizedBox(
             height: 20,
-          ),
-          FlatButton(
-            child: Text(
-              'logout',
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: logout,
           ),
           FlatButton(
             child: Text(
