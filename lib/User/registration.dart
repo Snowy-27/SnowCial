@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Registration extends StatefulWidget {
   Registration({Key key}) : super(key: key);
@@ -15,14 +17,19 @@ class _Registration extends State<Registration> {
   final passHolder = TextEditingController();
   final nameHolder = TextEditingController();
   final pseudoHolder = TextEditingController();
+
   var status = '';
+  
+    var error = 'no';
   @override
   void initState() {
     super.initState();
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.blueGrey[900],
+    ));
   }
 
   void addUser() async {
-    var error = false;
     var id;
     firestore
         .collection('user')
@@ -30,37 +37,58 @@ class _Registration extends State<Registration> {
         .get()
         .then((QuerySnapshot value) {
       if (pseudoHolder.text == value.docs[0]['pseudo']) {
-        error = true;
         setState(() {
           status = 'Ce pseudo est deja utilisé';
+          error = 'yes';
         });
       }
     });
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-              email: emailHolder.text, password: passHolder.text);
-      id = userCredential.user.uid;
-    } on FirebaseAuthException catch (e) {
-      error = true;
-      if (e.code == 'weak-password') {
-        setState(() {
-          status = 'Le mot de passe est trop court';
-        });
-      } else if (e.code == 'email-already-in-use') {
-        setState(() {
-          status = "Un compte avec cet email existe deja";
-        });
+    print('________________0' +
+        error.toString() +
+        ' ççççççççççççççççççççççççççç');
+    if (error == 'no') {
+      print('--------------------' + error.toString() + '----------------');
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+                email: emailHolder.text, password: passHolder.text);
+        id = userCredential.user.uid;
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          setState(() {
+            status = 'Le mot de passe est trop court';
+            error = 'yes';
+          });
+        } else if (e.code == 'email-already-in-use') {
+          setState(() {
+            error = 'yes';
+            status = "Un compte avec cet email existe deja";
+          });
+        }
+      } catch (e) {
+        print(e);
+        error = 'yes';
       }
-    } catch (e) {
-      print(e);
     }
-    if (!error) {
+    if (error == 'no') {
+      var tok;
+      final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+      await _firebaseMessaging.getToken().then((token) {
+        setState(() {
+          tok = token.toString();
+        });
+        print(_firebaseMessaging.getToken().then((token) {
+          print(token);
+        }));
+      });
       firestore.collection('user').add({
         'idUser': id.toString(),
         'email': emailHolder.text,
         'name': nameHolder.text,
         'pseudo': pseudoHolder.text,
+        'token': tok,
+        'liked': [],
       });
       await firestore.collection("contact").add({
         'pseudo': pseudoHolder.text,
@@ -71,12 +99,12 @@ class _Registration extends State<Registration> {
         status =
             "Inscription Reussi \n vous allez recevoir un mail de confiramtion";
       });
-      pseudoHolder.clear();
-      passHolder.clear();
-      emailHolder.clear();
-      nameHolder.clear();
+      // pseudoHolder.clear();
+      // passHolder.clear();
+      // emailHolder.clear();
+      // nameHolder.clear();
     }
-    error = false;
+    error = 'no';
   }
 
   @override

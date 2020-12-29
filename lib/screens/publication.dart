@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:authsnow/ad_manager.dart';
-import 'package:firebase_admob/firebase_admob.dart';
+import 'package:ionicons/ionicons.dart';
+
+
 
 class Publication extends StatefulWidget {
   Publication({Key key, this.name, this.email, this.pseudo}) : super(key: key);
@@ -15,32 +16,6 @@ class Publication extends StatefulWidget {
 }
 
 class _Publication extends State<Publication> {
-  var ams = AdManager();
-  BannerAd myBanner;
-
-  @override
-  void initState() {
-    super.initState();
-    FirebaseAdMob.instance.initialize(appId: ams.getappId());
-    myBanner = BannerAd(
-      adUnitId: 'ca-app-pub-1380656527637231/1560905200',
-      size: AdSize.banner,
-      listener: (MobileAdEvent event) {
-        print("BannerAd event is $event");
-      },
-    );
-    myBanner
-      ..load()
-      ..show(
-        // Positions the banner ad 60 pixels from the bottom of the screen
-        anchorOffset: 0.0,
-        // Positions the banner ad 10 pixels from the center of the screen to the right
-        horizontalCenterOffset: 0,
-        // Banner Position
-        anchorType: AnchorType.bottom,
-      );
-  }
-
   var email;
   var currentUrl = [];
   var likeNumber = 0;
@@ -54,7 +29,8 @@ class _Publication extends State<Publication> {
   final picker = ImagePicker();
   final firestoreInstance = FirebaseFirestore.instance;
   Stream test;
-
+  var icon = Ionicons.heart_outline;
+  var liked = false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -62,7 +38,6 @@ class _Publication extends State<Publication> {
       child: StreamBuilder(
         stream: firestoreInstance
             .collection("images")
-            .where('pseudo', isEqualTo: widget.pseudo)
             .orderBy('timestamp', descending: true)
             .snapshots(),
         // ignore: missing_return
@@ -78,9 +53,86 @@ class _Publication extends State<Publication> {
                     DocumentSnapshot url = snapshot.data.documents[index];
                     return Column(
                       children: [
-                        Image.network(url['url']),
                         Container(
-                          alignment: Alignment.bottomCenter,
+                          color: Colors.blueGrey[900],
+                          height: 45,
+                          width: MediaQuery.of(context).size.width,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.only(left: 10),
+                                height: 40,
+                                width: 40,
+                                child: CircleAvatar(
+                                  radius: 50.0,
+                                  backgroundImage: NetworkImage(
+                                      "https://e7.pngegg.com/pngimages/1008/377/png-clipart-computer-icons-avatar-user-profile-avatar-heroes-black-hair.png"),
+                                  backgroundColor: Colors.transparent,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 40,
+                              ),
+                              Text(
+                                url['pseudo'],
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                ),
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width / 2.4,
+                              ),
+                              ClipRRect(
+                                  child: RaisedButton(
+                                onPressed: () {
+                                  print(MediaQuery.of(context).size.width);
+                                },
+                                child: Padding(
+                                  child: Icon(
+                                    Icons.more_vert,
+                                    color: Colors.white,
+                                  ),
+                                  padding: EdgeInsets.only(left: 28),
+                                ),
+                                elevation: 0,
+                                color: Colors.transparent,
+                              ))
+                            ],
+                          ),
+                        ),
+                        Image.network(url['url']),
+                        Row(
+                          children: [
+                            RaisedButton(
+                                onPressed: () {
+                                  if (!liked) {
+                                    setState(() {
+                                      icon = Ionicons.heart;
+                                      liked = true;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      icon = Ionicons.heart_outline;
+                                      liked = false;
+                                    });
+                                  }
+                                },
+                                color: Colors.transparent,
+                                child: Padding(
+                                  child: Icon(
+                                    icon,
+                                    color: Colors.white,
+                                  ),
+                                  padding: EdgeInsets.only(
+                                    right: 30,
+                                  ),
+                                ))
+                          ],
+                        ),
+                        SizedBox(
+                          height: 20,
                         ),
                       ],
                     );

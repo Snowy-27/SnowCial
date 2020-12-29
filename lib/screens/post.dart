@@ -73,27 +73,34 @@ class _PostState extends State<Post> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: Container(
-          child: Center(
-        child: ListView(
+        backgroundColor: Colors.black,
+        body: Container(
+            child: Center(
+          child: ListView(
+            children: [
+              url == null
+                  ? Text('')
+                  : Column(
+                      children: [
+                        Text('Votre photo a ete publié'),
+                        Image.network(url),
+                      ],
+                    ),
+            ],
+          ),
+        )),
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            url == null
-                ? Text('')
-                : Column(
-                    children: [
-                      Text('Votre photo a ete publié'),
-                      Image.network(url),
-                    ],
-                  ),
+            FloatingActionButton(
+              onPressed: chooseFile,
+              tooltip: 'Pick Image',
+              child: Icon(Icons.add_a_photo),
+            ),
+            SizedBox(
+              height: 55,
+            ),
           ],
-        ),
-      )),
-      floatingActionButton: FloatingActionButton(
-        onPressed: chooseFile,
-        tooltip: 'Pick Image',
-        child: Icon(Icons.add_a_photo),
-      ),
-    );
+        ));
   }
 }

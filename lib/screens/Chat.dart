@@ -1,5 +1,11 @@
+import 'dart:convert';
+
+import 'package:authsnow/ad_show.dart';
+import 'package:authsnow/key.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:http/http.dart' as http;
 
 class Chat extends StatefulWidget {
   Chat({Key key, this.name, this.email, this.pseudo, this.receiver})
@@ -21,6 +27,14 @@ class _ChatState extends State<Chat> {
   var ist = false;
   final firestoreInstance = FirebaseFirestore.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  void initState() {
+    super.initState();
+    _firebaseMessaging.getToken().then((token) {
+      print(token);
+    });
+  }
 
   getMessage() {
     StreamBuilder(
@@ -136,7 +150,7 @@ class _ChatState extends State<Chat> {
             icon: Icon(Icons.send),
             iconSize: 25.0,
             color: Theme.of(context).primaryColor,
-            onPressed: () {
+            onPressed: () async {
               firestoreInstance.collection("messages").add({
                 'message': messageHolder.text,
                 'pseudo': widget.pseudo,
@@ -147,6 +161,32 @@ class _ChatState extends State<Chat> {
                     DateTime.now().second.toString(),
                 'time': DateTime.now()
               });
+              await Future.delayed(Duration(seconds: 3));
+              var key = Keys();
+              await http.post(
+                'https://fcm.googleapis.com/fcm/send',
+                headers: <String, String>{
+                  'Content-Type': 'application/json',
+                  'Authorization': 'key=' + key.token,
+                },
+                body: jsonEncode(
+                  <String, dynamic>{
+                    'notification': <String, dynamic>{
+                      'body': messageHolder.text,
+                      'title': widget.pseudo,
+                    },
+                    'priority': 'high',
+                    'data': <String, dynamic>{
+                      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+                      'id': '1',
+                      'status': 'done'
+                    },
+                    'to': key.a,
+                  },
+                ),
+              );
+              print('sended');
+              
               messageHolder.clear();
             },
           ),
