@@ -36,6 +36,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0-nullsafety.3"
+  chat_list:
+    dependency: "direct main"
+    description:
+      name: chat_list
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   clock:
     dependency: transitive
     description:

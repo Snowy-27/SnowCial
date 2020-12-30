@@ -17,14 +17,14 @@ void main() async {
   await Firebase.initializeApp();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var uid = prefs.getString('uid');
-  var ad = Add();
-  if (ad.showa) {
-    ad.show();
-  } else {
-    ad.dispose(); 
-  }
+  // var ad = Add();
+  // if (ad.showa) {
+  //   ad.show();
+  // } else {
+  //   ad.dispose();
+  // }
 
-  print(ad.showa);
+  // print(ad.showa);
   runApp(MyApp(
     home: uid == null
         ? Login()

@@ -1,11 +1,12 @@
 import 'dart:convert';
-
+import 'package:bubble/bubble.dart';
 import 'package:authsnow/ad_show.dart';
 import 'package:authsnow/key.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
+import 'package:chat_list/chat_list.dart';
 
 class Chat extends StatefulWidget {
   Chat({Key key, this.name, this.email, this.pseudo, this.receiver})
@@ -62,53 +63,35 @@ class _ChatState extends State<Chat> {
   }
 
   _buildMessage(var message, bool isMe, var time) {
-    final Container msg = Container(
-      margin: isMe
-          ? EdgeInsets.only(
-              top: 8.0,
-              bottom: 8.0,
-              left: 80.0,
-            )
-          : EdgeInsets.only(
-              top: 8.0,
-              bottom: 8.0,
-            ),
-      padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
-      width: (MediaQuery.of(context).size.width) * 0.75,
-      height: 76,
-      decoration: BoxDecoration(
-        color: isMe ? Colors.indigo[500] : Colors.blueGrey[900],
-        borderRadius: isMe
-            ? BorderRadius.only(
-                topLeft: Radius.circular(15.0),
-                bottomLeft: Radius.circular(15.0),
-              )
-            : BorderRadius.only(
-                topRight: Radius.circular(15.0),
-                bottomRight: Radius.circular(15.0),
+    var msg = Container(
+      margin: EdgeInsets.only(left: 5, right: 5, top: 3),
+      child: Bubble(
+        nip: isMe ? BubbleNip.rightTop : BubbleNip.leftTop,
+        alignment: Alignment.centerRight,
+        margin: BubbleEdges.only(top: 3),
+        color: isMe ? Colors.red : Colors.blue,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              time.toString(),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16.0,
+                fontWeight: FontWeight.w600,
               ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            time.toString(),
-            style: TextStyle(
-              color: Colors.blueGrey,
-              fontSize: 16.0,
-              fontWeight: FontWeight.w600,
             ),
-          ),
-          SizedBox(height: 8.0),
-          Text(
-            message,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16.0,
-              fontWeight: FontWeight.w600,
+            SizedBox(height: 8.0),
+            Text(
+              message,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16.0,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
     if (isMe) {
