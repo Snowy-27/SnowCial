@@ -162,12 +162,21 @@ class _ChatState extends State<Chat> {
                 'time': DateTime.now()
               });
               await Future.delayed(Duration(seconds: 3));
-              var key = Keys();
+              var keys;
+              var k = Keys();
+              firestoreInstance
+                  .collection('user')
+                  .where('pseudo', isEqualTo: widget.receiver)
+                  .get()
+                  .then((value) {
+                keys = value.docs[0]['token'];
+                print('----' + keys + '----------');
+              });
               await http.post(
                 'https://fcm.googleapis.com/fcm/send',
                 headers: <String, String>{
                   'Content-Type': 'application/json',
-                  'Authorization': 'key=' + key.token,
+                  'Authorization': 'key=' + k.token,
                 },
                 body: jsonEncode(
                   <String, dynamic>{
@@ -181,12 +190,12 @@ class _ChatState extends State<Chat> {
                       'id': '1',
                       'status': 'done'
                     },
-                    'to': key.a,
+                    'to': keys,
                   },
                 ),
               );
               print('sended');
-              
+
               messageHolder.clear();
             },
           ),

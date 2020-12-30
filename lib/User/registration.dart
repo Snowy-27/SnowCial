@@ -19,8 +19,8 @@ class _Registration extends State<Registration> {
   final pseudoHolder = TextEditingController();
 
   var status = '';
-  
-    var error = 'no';
+
+  var error = 'no';
   @override
   void initState() {
     super.initState();
@@ -31,18 +31,22 @@ class _Registration extends State<Registration> {
 
   void addUser() async {
     var id;
-    firestore
-        .collection('user')
-        .where('pseudo', isEqualTo: pseudoHolder.text)
-        .get()
-        .then((QuerySnapshot value) {
-      if (pseudoHolder.text == value.docs[0]['pseudo']) {
-        setState(() {
-          status = 'Ce pseudo est deja utilisé';
-          error = 'yes';
-        });
-      }
-    });
+    try {
+      await firestore
+          .collection('user')
+          .where('pseudo', isEqualTo: pseudoHolder.text)
+          .get()
+          .then((QuerySnapshot value) {
+        if (pseudoHolder.text == value.docs[0]['pseudo']) {
+          setState(() {
+            status = 'Ce pseudo est deja utilisé';
+            error = 'yes';
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
     print('________________0' +
         error.toString() +
         ' ççççççççççççççççççççççççççç');
@@ -99,10 +103,10 @@ class _Registration extends State<Registration> {
         status =
             "Inscription Reussi \n vous allez recevoir un mail de confiramtion";
       });
-      // pseudoHolder.clear();
-      // passHolder.clear();
-      // emailHolder.clear();
-      // nameHolder.clear();
+      pseudoHolder.clear();
+      passHolder.clear();
+      emailHolder.clear();
+      nameHolder.clear();
     }
     error = 'no';
   }
