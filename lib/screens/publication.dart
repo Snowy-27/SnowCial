@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ionicons/ionicons.dart';
-
-
 
 class Publication extends StatefulWidget {
   Publication({Key key, this.name, this.email, this.pseudo}) : super(key: key);
@@ -76,9 +75,11 @@ class _Publication extends State<Publication> {
                               ),
                               Text(
                                 url['pseudo'],
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
+                                style: GoogleFonts.hanaleiFill(
+                                  textStyle: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                  ),
                                 ),
                               ),
                               SizedBox(

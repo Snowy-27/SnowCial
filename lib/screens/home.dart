@@ -5,6 +5,7 @@ import 'package:authsnow/screens/profile.dart';
 import 'package:authsnow/screens/publication.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'publication.dart';
 
@@ -61,7 +62,13 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Snowy'),
+          title: Text(
+            'Snowy',
+            style: GoogleFonts.hanaleiFill(
+                textStyle: TextStyle(
+              color: Colors.blue,
+            )),
+          ),
           actions: [
             Container(
               width: 40,

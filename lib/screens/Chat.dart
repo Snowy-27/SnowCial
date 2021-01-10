@@ -1,12 +1,9 @@
 import 'dart:convert';
-import 'package:bubble/bubble.dart';
-import 'package:authsnow/ad_show.dart';
-import 'package:authsnow/key.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'package:chat_list/chat_list.dart';
 
 class Chat extends StatefulWidget {
   Chat({Key key, this.name, this.email, this.pseudo, this.receiver})
@@ -63,35 +60,53 @@ class _ChatState extends State<Chat> {
   }
 
   _buildMessage(var message, bool isMe, var time) {
-    var msg = Container(
-      margin: EdgeInsets.only(left: 5, right: 5, top: 3),
-      child: Bubble(
-        nip: isMe ? BubbleNip.rightTop : BubbleNip.leftTop,
-        alignment: Alignment.centerRight,
-        margin: BubbleEdges.only(top: 3),
-        color: isMe ? Colors.red : Colors.blue,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              time.toString(),
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16.0,
-                fontWeight: FontWeight.w600,
-              ),
+    final Container msg = Container(
+      margin: isMe
+          ? EdgeInsets.only(
+              top: 8.0,
+              bottom: 8.0,
+              left: 80.0,
+            )
+          : EdgeInsets.only(
+              top: 8.0,
+              bottom: 8.0,
             ),
-            SizedBox(height: 8.0),
-            Text(
-              message,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16.0,
-                fontWeight: FontWeight.w600,
+      padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
+      width: (MediaQuery.of(context).size.width) * 0.75,
+      height: 76,
+      decoration: BoxDecoration(
+        color: isMe ? Colors.indigo[500] : Colors.blueGrey[900],
+        borderRadius: isMe
+            ? BorderRadius.only(
+                topLeft: Radius.circular(15.0),
+                bottomLeft: Radius.circular(15.0),
+              )
+            : BorderRadius.only(
+                topRight: Radius.circular(15.0),
+                bottomRight: Radius.circular(15.0),
               ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            time.toString(),
+            style: TextStyle(
+              color: Colors.blueGrey,
+              fontSize: 16.0,
+              fontWeight: FontWeight.w600,
             ),
-          ],
-        ),
+          ),
+          SizedBox(height: 8.0),
+          Text(
+            message,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16.0,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
     if (isMe) {
@@ -146,20 +161,23 @@ class _ChatState extends State<Chat> {
               });
               await Future.delayed(Duration(seconds: 3));
               var keys;
-              var k = Keys();
-              firestoreInstance
+              await firestoreInstance
                   .collection('user')
                   .where('pseudo', isEqualTo: widget.receiver)
                   .get()
                   .then((value) {
                 keys = value.docs[0]['token'];
-                print('----' + keys + '----------');
               });
+              print(
+                  '--------------------' + keys + 'èèèèèèèèèèèèèèèèèèèèèèèèèè');
+              var k =
+                  'AAAA-nXpIy8:APA91bFv-e2_du535NwAzJ546_J601JCORu3ppRYfw4YI2Newn-16Pmx-MKRW75aAbJaJszVxCgxKxhVGUMp6u5FJmBYaWhYQYxvXGyPgFVssQ9tS79kRrynsVPXKz4_wvjWU8pFbnff';
+
               await http.post(
                 'https://fcm.googleapis.com/fcm/send',
                 headers: <String, String>{
                   'Content-Type': 'application/json',
-                  'Authorization': 'key=' + k.token,
+                  'Authorization': 'key=' + k,
                 },
                 body: jsonEncode(
                   <String, dynamic>{
@@ -211,8 +229,10 @@ class _ChatState extends State<Chat> {
         backgroundColor: Colors.transparent,
         title: Text(
           widget.receiver,
-          style: TextStyle(
-            fontSize: 20.0,
+          style: GoogleFonts.hanaleiFill(
+            textStyle: TextStyle(
+              fontSize: 20.0,
+            ),
           ),
         ),
         elevation: 0.0,

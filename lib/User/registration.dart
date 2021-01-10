@@ -50,6 +50,7 @@ class _Registration extends State<Registration> {
     print('________________0' +
         error.toString() +
         ' ççççççççççççççççççççççççççç');
+    
     if (error == 'no') {
       print('--------------------' + error.toString() + '----------------');
       try {

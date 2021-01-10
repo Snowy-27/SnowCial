@@ -1,10 +1,6 @@
-import 'dart:convert';
-import 'dart:async';
-
-import 'package:authsnow/key.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:google_fonts/google_fonts.dart';
 import 'Chat.dart';
 
 class Listcontact extends StatefulWidget {
@@ -24,7 +20,7 @@ class _ListcontactState extends State<Listcontact> {
         padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
         height: 140,
         decoration: BoxDecoration(
-          color: Colors.black,
+          color: Color.fromRGBO(10, 4, 16, 1),
           borderRadius: BorderRadius.all(
             Radius.circular(15.0),
           ),
@@ -32,31 +28,24 @@ class _ListcontactState extends State<Listcontact> {
         child: Column(
           children: [
             Divider(
-              color: Colors.yellow,
+              color: Color.fromRGBO(122, 49, 196, 1),
             ),
             Expanded(
               child: FlatButton(
                 focusColor: Colors.blue,
                 color: Colors.transparent,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text(
-                      pseudo,
-                      style: TextStyle(
-                        color: Colors.blueGrey,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      lastmessage.toString(),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    Text(pseudo,
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.hanaleiFill(
+                          textStyle: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )),
                   ],
                 ),
                 onPressed: () {
@@ -85,7 +74,7 @@ class _ListcontactState extends State<Listcontact> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.black,
+      color: Color.fromRGBO(10, 4, 16, 2),
       child: Container(
         child: ClipRRect(
             child: StreamBuilder(
@@ -102,7 +91,7 @@ class _ListcontactState extends State<Listcontact> {
                       return isNotMe
                           ? _buildcontact(
                               message['pseudo'],
-                              'dd',
+                              '',
                             )
                           : Container(
                               width: 0,

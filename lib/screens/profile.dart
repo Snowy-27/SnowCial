@@ -1,6 +1,7 @@
 import 'package:authsnow/User/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
@@ -50,11 +51,15 @@ class _ProfileState extends State<Profile> {
                 children: [
                   Text(
                     'Email: ',
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+                    style: GoogleFonts.hanaleiFill(
+                        textStyle:
+                            TextStyle(fontSize: 20, color: Colors.white)),
                   ),
                   Text(
                     widget.email,
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+                    style: GoogleFonts.hanaleiFill(
+                        textStyle:
+                            TextStyle(fontSize: 20, color: Colors.white)),
                   )
                 ],
               ),
@@ -68,11 +73,15 @@ class _ProfileState extends State<Profile> {
                 children: [
                   Text(
                     'Nom: ',
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+                    style: GoogleFonts.hanaleiFill(
+                        textStyle:
+                            TextStyle(fontSize: 20, color: Colors.white)),
                   ),
                   Text(
                     widget.name,
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+                    style: GoogleFonts.hanaleiFill(
+                        textStyle:
+                            TextStyle(fontSize: 20, color: Colors.white)),
                   )
                 ],
               ),
@@ -87,7 +96,9 @@ class _ProfileState extends State<Profile> {
                   FlatButton(
                     child: Text(
                       'Se deconnecter',
-                      style: TextStyle(fontSize: 20, color: Colors.white),
+                      style: GoogleFonts.hanaleiFill(
+                          textStyle:
+                              TextStyle(fontSize: 20, color: Colors.white)),
                     ),
                     textColor: Colors.white,
                     onPressed: logout,
